@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    container_name: codebank-app
+    ports:
+      - "5051:5051"
+    volumes:
+      - ./:/go/src
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: postgres:14.5-alpine
+    container_name: codebank-db
+    restart: always
+    tty: true
+    volumes:
+      - .docker/dbdata:/var/lib/postgresql/data
+      - .docker/postgres/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    environment:
+      - POSTGRES_DB=codebank
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  pgadmin:
+    image: dpage/pgadmin4:6.12
+    tty: true
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@user.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
