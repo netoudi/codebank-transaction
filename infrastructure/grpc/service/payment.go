@@ -6,7 +6,6 @@ import (
 	"github.com/netoudi/codebank-transaction/dto"
 	"github.com/netoudi/codebank-transaction/infrastructure/grpc/pb"
 	"github.com/netoudi/codebank-transaction/usecase"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -20,7 +19,7 @@ func NewTransactionService() *TransactionService {
 	return &TransactionService{}
 }
 
-func (t *TransactionService) Payment(ctx context.Context, in *pb.PaymentRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (t *TransactionService) Payment(ctx context.Context, in *pb.PaymentRequest) (*empty.Empty, error) {
 	transactionDto := dto.Transaction{
 		Name:            in.GetCreditCard().GetName(),
 		Number:          in.GetCreditCard().GetNumber(),
